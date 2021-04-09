@@ -4,10 +4,10 @@ import json
 def handler(event, _):
     n = int(event['pathParameters']['n'])
 
-    def is_divisor(x):
-        return n % x == 0
-
-    aux = list(filter(is_divisor, range(1, n+1)))
+    aux = []
+    for i in range(1, n+1):
+        if n % i == 0:
+            aux.append(i)
 
     return {
         'statusCode': 200,
