@@ -1,0 +1,44 @@
+Transform: AWS::Serverless-2016-10-31
+
+Description: Stack per il deploy dell'api gateway per interagire con i dispositivi
+
+Globals:
+  Function:
+    Timeout: 5
+    MemorySize: 256
+    Environment:
+      Variables:
+        AWS_XRAY_CONTEXT_MISSING: LOG_ERROR
+        AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+
+Parameters: {}
+
+Resources:
+  API: # the api responsible for publishing methods
+    Type: AWS::Serverless::Api
+    Properties:
+      Description: API per la gestione dei dispositivi
+      EndpointConfiguration:
+        Type: EDGE
+      MinimumCompressionSize: 0
+      OpenApiVersion: "3.0.1"
+      StageName: api
+      TracingEnabled: true
+
+  CommandsAPIFn: # the function to fullfil API requests
+    Type: AWS::Serverless::Function
+    Properties:
+      AutoPublishAlias: live
+      CodeUri: ./lambda/python38/greetings/greetings
+      Handler: main.handler
+      Runtime: python3.8
+      Description: Greetings function for Cloud Benchmark
+      Tracing: PassThrough
+      Events:
+        PostCommand:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: API
+            Path: /python38/greetings
+            Method: GET
