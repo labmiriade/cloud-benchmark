@@ -1,0 +1,12 @@
+version = 0.1
+[default]
+[default.build]
+use_container = true
+cached = true
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "cloud-benchmark"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1kxbindk8dpl4"
+s3_prefix = "cloud-benchmark"
+region = "eu-central-1"
+capabilities = "CAPABILITY_IAM"
