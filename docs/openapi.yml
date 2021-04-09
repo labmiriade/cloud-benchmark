@@ -1,0 +1,57 @@
+---
+openapi: 3.0.3
+info:
+  version: "2021-04-09"
+  title: "Cloud Benchmark"
+
+paths:
+  /greetings:
+    get:
+      tags: [No Dependencies]
+      summary: Greets the caller back
+      description: >-
+        Returns a message greeting the world or the caller if the query
+        parameter "name" is provided.
+      parameters: 
+        - in: query
+          name: name
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Hello, world!'
+  /numbers/{n}/divisors:
+    parameters:
+      - in: path
+        name: n
+        required: true
+        schema:
+          type: integer
+    get:
+      tags: [No Dependencies]
+      summary: returns the list of divisors for the given number
+      description: >-
+        No optimization must be implemented in this method,
+        all numbers from 1 to {n} should be tested as possible divisors
+      responses:
+        200:
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  divisors:
+                    type: array
+                    items:
+                      type: integer
+
