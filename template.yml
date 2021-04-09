@@ -25,7 +25,7 @@ Resources:
       StageName: api
       TracingEnabled: true
 
-  CommandsAPIFn: # the function to fullfil API requests
+  GreetingsFn: # the function to fullfil API requests
     Type: AWS::Serverless::Function
     Properties:
       AutoPublishAlias: live
@@ -41,4 +41,22 @@ Resources:
             RestApiId:
               Ref: API
             Path: /python38/greetings
+            Method: GET
+
+  DivisorsFn: # the function to fullfil API requests
+    Type: AWS::Serverless::Function
+    Properties:
+      AutoPublishAlias: live
+      CodeUri: ./lambda/python38/divisors/divisors
+      Handler: main.handler
+      Runtime: python3.8
+      Description: Greetings function for Cloud Benchmark
+      Tracing: PassThrough
+      Events:
+        PostCommand:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: API
+            Path: /python38/numbers/{n}/divisors
             Method: GET
