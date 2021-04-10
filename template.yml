@@ -78,3 +78,20 @@ Resources:
             Path: /python38/numbers/{n}/divisors
             Method: GET
 
+  DivisorsGoFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      AutoPublishAlias: live
+      CodeUri: ./lambda/go/divisors
+      Handler: main
+      Runtime: go1.x
+      Description: Divisors Go function for Cloud Benchmark
+      Tracing: PassThrough
+      Events:
+        PostCommand:
+          Type: Api
+          Properties:
+            RestApiId: !Ref API
+            Path: /go/numbers/{n}/divisors
+            Method: GET
+      
