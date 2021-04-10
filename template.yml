@@ -43,6 +43,23 @@ Resources:
             Path: /python38/greetings
             Method: GET
 
+  GreetingsGoFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      AutoPublishAlias: live
+      CodeUri: ./lambda/go/greetings
+      Handler: main
+      Runtime: go1.x
+      Description: Greetings Go function for Cloud Benchmark
+      Tracing: PassThrough
+      Events:
+        PostCommand:
+          Type: Api
+          Properties:
+            RestApiId: !Ref API
+            Path: /go/greetings
+            Method: GET
+      
   DivisorsFn: # the function to fullfil API requests
     Type: AWS::Serverless::Function
     Properties:
@@ -60,3 +77,4 @@ Resources:
               Ref: API
             Path: /python38/numbers/{n}/divisors
             Method: GET
+
