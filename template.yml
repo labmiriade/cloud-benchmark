@@ -132,23 +132,23 @@ Resources:
             Path: /python38/dynamo/single/{key}
             Method: GET
 
-  # DySingleGoFn:
-  #   Type: AWS::Serverless::Function
-  #   Properties:
-  #     AutoPublishAlias: live
-  #     CodeUri: ./lambda/python38/dysingle/dysingle
-  #     Handler: main.handler
-  #     Runtime: go1.x
-  #     Description: DynamoDB Single function for Cloud Benchmark
-  #     Tracing: PassThrough
-  #     Policies:
-  #       - DynamoDBReadPolicy:
-  #           TableName: !Ref MainTable
-  #     Events:
-  #       PostCommand:
-  #         Type: Api
-  #         Properties:
-  #           RestApiId:
-  #             Ref: API
-  #           Path: /python38/dynamo/single/{key}
-  #           Method: GET
+  DySingleGoFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      AutoPublishAlias: live
+      CodeUri: ./lambda/go/dysingle
+      Handler: main
+      Runtime: go1.x
+      Description: DynamoDB Single function for Cloud Benchmark
+      Tracing: PassThrough
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref MainTable
+      Events:
+        PostCommand:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: API
+            Path: /go/dynamo/single/{key}
+            Method: GET
