@@ -60,7 +60,7 @@ Resources:
             RestApiId: !Ref API
             Path: /go/greetings
             Method: GET
-
+      
   DivisorsFn: # the function to fullfil API requests
     Type: AWS::Serverless::Function
     Properties:
