@@ -12,7 +12,7 @@ paths:
       description: >-
         Returns a message greeting the world or the caller if the query
         parameter "name" is provided.
-      parameters: 
+      parameters:
         - in: query
           name: name
           required: false
@@ -22,17 +22,17 @@ paths:
         200:
           description: OK
           content:
-            'application/json':
+            application/json:
               schema:
                 type: object
                 properties:
                   message:
                     type: string
-                    example: 'Hello, world!'
+                    example: "Hello, world!"
   /numbers/{n}/divisors:
     parameters:
       - in: path
-        name: n
+        name: "n"
         required: true
         schema:
           type: integer
@@ -46,7 +46,7 @@ paths:
         200:
           description: OK
           content:
-            'application/json':
+            application/json:
               schema:
                 type: object
                 properties:
@@ -55,3 +55,34 @@ paths:
                     items:
                       type: integer
 
+  /dynamo/single/{key}:
+    parameters:
+      - in: path
+        name: key
+        required: true
+        schema:
+          type: string
+    get:
+      tags: [Dynamo]
+      summary: Returns the item at the given key
+      description: >-
+        Returns the item the item in the dynamodb table that has `pk` and `sk`
+        equal to the `key` path parameter
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                description: the object found in dynamo
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Item "key" does not exist
