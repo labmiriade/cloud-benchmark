@@ -1,7 +1,8 @@
 package it.miriade;
 
+import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
+import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
 
@@ -23,10 +24,28 @@ public class DynamoSingleResource {
     String tableName;
 
     @Inject
-    DynamoDbClient dynamoDB;
+    DynamoDbAsyncClient dynamoDB;
 
     @GET
-    public Response dySingle(@PathParam("key") String key) {
+    public Uni<Response> dySingle(@PathParam("key") String key) {
+        return getItem(key).onItem().transform(item -> {
+                    if (item == null) {
+                        Map<String, String> entity = new HashMap<>(1);
+                        entity.put("message", String.format("Item \"%s\" does not exist", key));
+                        return Response.status(Response.Status.NOT_FOUND).entity(entity).build();
+                    }
+
+                    Map<String, String> response = new HashMap<>(item.size());
+                    for (Map.Entry<String, AttributeValue> entry : item.entrySet()) {
+                        response.put(entry.getKey(), entry.getValue().s());
+                    }
+
+                    return Response.status(Response.Status.OK).entity(response).build();
+                }
+        );
+    }
+
+    private Uni<Map<String, AttributeValue>> getItem(String key) {
         final Map<String, AttributeValue> keyMap = new HashMap<>(2);
         keyMap.put("pk", AttributeValue.builder().s(key).build());
         keyMap.put("sk", AttributeValue.builder().s(key).build());
@@ -36,19 +55,12 @@ public class DynamoSingleResource {
                 .key(keyMap)
                 .build();
 
-        Map<String, AttributeValue> item = dynamoDB.getItem(request).item();
-
-        if (item.isEmpty()) {
-            Map<String, String> entity = new HashMap<>(1);
-            entity.put("message", String.format("Item \"%s\" does not exist", key));
-            return Response.status(Response.Status.NOT_FOUND).entity(entity).build();
-        }
-
-        Map<String, String> response = new HashMap<>(item.size());
-        for (Map.Entry<String, AttributeValue> entry : item.entrySet()) {
-            response.put(entry.getKey(), entry.getValue().s());
-        }
-
-        return Response.status(Response.Status.OK).entity(response).build();
+        return Uni.createFrom().completionStage(() -> dynamoDB.getItem(request))
+                .onItem().transformToUni(item -> {
+                    if (item.hasItem()) {
+                        return Uni.createFrom().item(item.item());
+                    }
+                    return Uni.createFrom().nullItem();
+                });
     }
 }
