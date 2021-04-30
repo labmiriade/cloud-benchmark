@@ -1,5 +1,6 @@
 package it.miriade;
 
+import io.smallrye.mutiny.Uni;
 import it.miriade.dto.DivisorDTO;
 
 import javax.ws.rs.GET;
@@ -15,16 +16,17 @@ public class NumbersResource {
 
     @GET
     @Path("/{n}/divisors")
-    public DivisorDTO getDivisors(@PathParam("n") long n) {
-        DivisorDTO divisor = new DivisorDTO();
-        divisor.divisors = new ArrayList<>();
+    public Uni<DivisorDTO> getDivisors(@PathParam("n") long n) {
+        return Uni.createFrom().emitter(em -> {
+            DivisorDTO divisor = new DivisorDTO();
+            divisor.divisors = new ArrayList<>();
 
-        for (long i = 1; i <= n; i++) {
-            if (n % i == 0) {
-                divisor.divisors.add(i);
+            for (long i = 1; i <= n; i++) {
+                if (n % i == 0) {
+                    divisor.divisors.add(i);
+                }
             }
-        }
-
-        return divisor;
+            em.complete(divisor);
+        });
     }
 }
