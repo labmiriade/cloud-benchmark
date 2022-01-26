@@ -39,8 +39,7 @@ Resources:
         PostCommand:
           Type: Api
           Properties:
-            RestApiId:
-              Ref: API
+            RestApiId: !Ref API
             Path: /python38/greetings
             Method: GET
 
@@ -60,7 +59,42 @@ Resources:
             RestApiId: !Ref API
             Path: /go/greetings
             Method: GET
-      
+
+  GreetingsJavaFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      AutoPublishAlias: live
+      CodeUri: ./lambda/java/greetings-jvm.zip
+      Handler: io.quarkus.amazon.lambda.runtime.QuarkusStreamHandler::handleRequest
+      Runtime: java11
+      Description: Greetings Java function for Cloud Benchmark
+      Tracing: PassThrough
+      Events:
+        PostCommand:
+          Type: Api
+          Properties:
+            RestApiId: !Ref API
+            Path: /quarkus/java/greetings
+            Method: GET
+
+  GreetingsJavaNativeFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      AutoPublishAlias: live
+      CodeUri: ./lambda/java/greetings-native.zip
+      Handler: not.used.in.provided.runtime
+      Runtime: provided
+      Description: Greetings Java Native function for Cloud Benchmark
+      Tracing: PassThrough
+      Events:
+        PostCommand:
+          Type: Api
+          Properties:
+            RestApiId: !Ref API
+            Path: /quarkus/native/greetings
+            Method: GET
+
+
   DivisorsFn: # the function to fullfil API requests
     Type: AWS::Serverless::Function
     Properties:
@@ -74,8 +108,7 @@ Resources:
         PostCommand:
           Type: Api
           Properties:
-            RestApiId:
-              Ref: API
+            RestApiId: !Ref API
             Path: /python38/numbers/{n}/divisors
             Method: GET
 
@@ -94,6 +127,40 @@ Resources:
           Properties:
             RestApiId: !Ref API
             Path: /go/numbers/{n}/divisors
+            Method: GET
+
+  DivisorsJavaFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      AutoPublishAlias: live
+      CodeUri: ./lambda/java/divisors-jvm.zip
+      Handler: io.quarkus.amazon.lambda.runtime.QuarkusStreamHandler::handleRequest
+      Runtime: java11
+      Description: Divisors Java function for Cloud Benchmark
+      Tracing: PassThrough
+      Events:
+        PostCommand:
+          Type: Api
+          Properties:
+            RestApiId: !Ref API
+            Path: /quarkus/java/numbers/{n}/divisors
+            Method: GET
+
+  DivisorsJavaNativeFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      AutoPublishAlias: live
+      CodeUri: ./lambda/java/divisors-native.zip
+      Handler: not.used.in.provided.runtime
+      Runtime: provided
+      Description: Divisors Java Native function for Cloud Benchmark
+      Tracing: PassThrough
+      Events:
+        PostCommand:
+          Type: Api
+          Properties:
+            RestApiId: !Ref API
+            Path: /quarkus/native/numbers/{n}/divisors
             Method: GET
 
   MainTable:
@@ -127,8 +194,7 @@ Resources:
         PostCommand:
           Type: Api
           Properties:
-            RestApiId:
-              Ref: API
+            RestApiId: !Ref API
             Path: /python38/dynamo/single/{key}
             Method: GET
 
@@ -148,7 +214,6 @@ Resources:
         PostCommand:
           Type: Api
           Properties:
-            RestApiId:
-              Ref: API
+            RestApiId: !Ref API
             Path: /go/dynamo/single/{key}
             Method: GET

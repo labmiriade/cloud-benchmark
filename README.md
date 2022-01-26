@@ -18,17 +18,18 @@ Sono stati testati i segenti ambienti e linguaggi
 ## Caveats
 
 - per interrogare le EC2 con TLS bisogna passare per l'api gateway
+- prima di deployare è necessario lanciare lo script `lambda/java/build-all.sh`, altrimenti SAM fallirà
 
 ## API Prefixes
 
 L'url è composto da:
+
 ```
 https://zhgqmwxzz4.execute-api.eu-central-1.amazonaws.com/api/{base}/{openapi path}
 ```
 
-| **BASE**  | python 3.8 | quarkus + JVM | quarkus           | go 1.6       |
-|-----------|------------|---------------|-------------------|--------------|
-| lambda    | python38/  | quarkus/java/ | quarkus/native/   | go/          |
-| t2micro   | -          | -             | t2micro/quarkus/  | t2micro/go/  |
-| t4gmicro  | -          | -             | t4gmicro/quarkus/ | t4gmicro/go/ |
-
+| **BASE** | python 3.8 | quarkus + JVM | quarkus           | go 1.6       |
+| -------- | ---------- | ------------- | ----------------- | ------------ |
+| lambda   | python38/  | quarkus/java/ | quarkus/native/   | go/          |
+| t2micro  | -          | -             | t2micro/quarkus/  | t2micro/go/  |
+| t4gmicro | -          | -             | t4gmicro/quarkus/ | t4gmicro/go/ |
